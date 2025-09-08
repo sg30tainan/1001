@@ -68,7 +68,8 @@ const modelMap = {
   "IPHONE12,8": "iPhone SE (第2代)",
   "IPHONE8,4": "iPhone SE (第1代)",
 
-  // Samsung / Google / 其他品牌...
+
+  // 其他品牌...
   "SM-G9800": "Galaxy S20","SM-G9860": "Galaxy S20+","SM-G9880": "Galaxy S20 Ultra",
   "SM-G9910": "Galaxy S21","SM-G9960": "Galaxy S21+","SM-G9980": "Galaxy S21 Ultra",
   "SM-S9010": "Galaxy S22","SM-S9060": "Galaxy S22+","SM-S9080": "Galaxy S22 Ultra",
@@ -101,8 +102,11 @@ const modelMap = {
 function guessModelName(rawModel) {
   if (!rawModel) return "未知機型";
   const key = rawModel.toUpperCase();
+  
   if (modelMap[key]) return modelMap[key];
+
   if (key.includes("IPHONE")) return "Apple iPhone（型號未知）";
+
   if (key.startsWith("SM-A")) return "Samsung Galaxy A 系列 " + rawModel;
   if (key.startsWith("SM-S")) return "Samsung Galaxy S 系列 " + rawModel;
   if (key.startsWith("SM-F")) return "Samsung Galaxy Z 系列 " + rawModel;
@@ -234,6 +238,7 @@ async function checkRecordAndDraw() {
     const recordSnap = await db.ref('lottery-records/' + userId).get();
     if (recordSnap.exists()) {
       const recordedPrize = recordSnap.val().prize;
+      // 在此處呼叫 showResult，並傳入已知的獎項名稱
       showResult(recordedPrize, true); 
       return;
     }
@@ -248,6 +253,7 @@ async function drawLottery(){
     const quotasSnap = await quotasRef.get();
     const quotas = quotasSnap.val();
 
+    // 在此處將 prize 變數賦予一個預設值，確保它總是有值
     prize = '';
 
     const rand = Math.random();
@@ -345,6 +351,7 @@ function checkScratchPercent(){
   let cleared=0;
   for(let i=3;i<imgData.length;i+=4) if(imgData[i]===0) cleared++;
   if(cleared/(maskCanvas.width*maskCanvas.height) > 0.5) {
+    // 這裡改為直接呼叫 showResult，因為 drawLottery 已確保 prize 有值
     showResult(prize, false);
     resultShown = true;
   }
